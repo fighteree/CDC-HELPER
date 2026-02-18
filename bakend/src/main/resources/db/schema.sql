@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for cdc_change_log
 -- ----------------------------
-DROP TABLE IF EXISTS `cdc_change_log`;
+DROP TABLE IF EXISTS `cdd_change_log`;
 CREATE TABLE `cdc_change_log`  (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `mapping_id` bigint NOT NULL,
