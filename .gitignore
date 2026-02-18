@@ -1,0 +1,40 @@
+# ---- General ----
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+~$*
+
+# Environment / secrets
+.env
+.env.*
+
+# IDE / Editor
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Node / Frontend (ui/cdc-ui)
+ui/cdc-ui/node_modules/
+ui/cdc-ui/dist/
+ui/cdc-ui/.eslintcache
+ui/cdc-ui/.vite/
+ui/cdc-ui/.cache/
+
+# Maven / Java (bakend)
+bakend/target/
+bakend/.mvn/wrapper/maven-wrapper.jar
+bakend/.mvn/wrapper/maven-wrapper.properties.backup
+
+# CDC runtime data
+bakend/offsets/
+bakend/logs/
+
+# OS / tooling
+*.orig
+*.bak
+

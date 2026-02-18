@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzdbx.cdc.mapper.MqTargetMapper">
+
+    <resultMap id="MqTargetMap" type="com.yzdbx.cdc.model.entity.MqTargetEntity">
+        <id column="id" property="id"/>
+        <result column="mapping_id" property="mappingId"/>
+        <result column="mq_type" property="mqType"/>
+        <result column="server_addr" property="serverAddr"/>
+        <result column="topic" property="topic"/>
+        <result column="routing_key" property="routingKey"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="extra_config" property="extraConfig"/>
+    </resultMap>
+
+    <select id="selectByMappingId" resultMap="MqTargetMap">
+        SELECT id, mapping_id, mq_type, server_addr, topic, routing_key,
+               username, password, extra_config, created_at, updated_at
+        FROM cdc_mq_target
+        WHERE mapping_id = #{mappingId}
+    </select>
+
+    <insert id="insert" parameterType="com.yzdbx.cdc.model.entity.MqTargetEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cdc_mq_target
+        (mapping_id, mq_type, server_addr, topic, routing_key, username, password, extra_config)
+        VALUES
+        (#{mappingId}, #{mqType}, #{serverAddr}, #{topic}, #{routingKey}, #{username}, #{password}, #{extraConfig})
+    </insert>
+
+    <update id="update" parameterType="com.yzdbx.cdc.model.entity.MqTargetEntity">
+        UPDATE cdc_mq_target
+        SET
+            mq_type = #{mqType},
+            server_addr = #{serverAddr},
+            topic = #{topic},
+            routing_key = #{routingKey},
+            username = #{username},
+            password = #{password},
+            extra_config = #{extraConfig}
+        WHERE mapping_id = #{mappingId}
+    </update>
+
+    <delete id="deleteByMappingId">
+        DELETE FROM cdc_mq_target WHERE mapping_id = #{mappingId}
+    </delete>
+
+</mapper>
+

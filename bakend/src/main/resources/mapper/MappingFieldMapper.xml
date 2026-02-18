@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzdbx.cdc.mapper.MappingFieldMapper">
+
+    <resultMap id="MappingFieldMap" type="com.yzdbx.cdc.model.entity.MappingFieldEntity">
+        <id column="id" property="id"/>
+        <result column="mapping_id" property="mappingId"/>
+        <result column="source_col" property="sourceCol"/>
+        <result column="target_col" property="targetCol"/>
+        <result column="is_pk" property="isPk"/>
+        <result column="expr" property="expr"/>
+        <result column="result_type" property="resultType"/>
+    </resultMap>
+
+    <insert id="bulkInsert">
+        INSERT INTO cdc_mapping_field
+        (mapping_id, source_col, target_col, is_pk, expr, result_type)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.mappingId}, #{item.sourceCol}, #{item.targetCol}, #{item.isPk}, #{item.expr}, #{item.resultType})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByMappingId">
+        DELETE FROM cdc_mapping_field WHERE mapping_id = #{mappingId}
+    </delete>
+
+    <select id="selectByMappingId" resultMap="MappingFieldMap">
+        SELECT id, mapping_id, source_col, target_col, is_pk, expr, result_type, created_at, updated_at
+        FROM cdc_mapping_field
+        WHERE mapping_id = #{mappingId}
+        ORDER BY id ASC
+    </select>
+
+</mapper>
+

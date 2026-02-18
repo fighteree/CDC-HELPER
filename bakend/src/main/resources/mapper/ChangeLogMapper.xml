@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzdbx.cdc.mapper.ChangeLogMapper">
+
+    <insert id="insert" parameterType="com.yzdbx.cdc.model.entity.ChangeLogEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cdc_change_log
+        (mapping_id, source_table, operation, target_type, success,
+         error_message, raw_data_json, cost_ms, replay_count, last_replay_at)
+        VALUES
+        (#{mappingId}, #{sourceTable}, #{operation}, #{targetType}, #{success},
+         #{errorMessage}, #{rawDataJson}, #{costMs}, #{replayCount}, #{lastReplayAt})
+    </insert>
+
+    <select id="selectRecent" resultType="com.yzdbx.cdc.model.entity.ChangeLogEntity">
+        SELECT id, mapping_id, source_table, operation, target_type, success,
+               error_message, raw_data_json, cost_ms, replay_count, last_replay_at, created_at
+        FROM cdc_change_log
+        ORDER BY id DESC
+        LIMIT #{limit}
+    </select>
+
+    <sql id="Condition_Where">
+        <where>
+            <if test="mappingId != null">
+                AND mapping_id = #{mappingId}
+            </if>
+            <if test="targetType != null and targetType != ''">
+                AND target_type = #{targetType}
+            </if>
+            <if test="success != null">
+                AND success = #{success}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (mapping_id LIKE CONCAT('%', #{keyword}, '%')
+                     OR source_table LIKE CONCAT('%', #{keyword}, '%')
+                     OR operation LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="operation != null and operation != ''">
+                AND operation = #{operation}
+            </if>
+            <if test="fromTime != null">
+                AND created_at &gt;= #{fromTime}
+            </if>
+            <if test="toTime != null">
+                AND created_at &lt;= #{toTime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectByCondition" resultType="com.yzdbx.cdc.model.entity.ChangeLogEntity">
+        SELECT id, mapping_id, source_table, operation, target_type, success,
+               error_message, raw_data_json, cost_ms, replay_count, last_replay_at, created_at
+        FROM cdc_change_log
+        <include refid="Condition_Where"/>
+        ORDER BY id DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countByCondition" resultType="int">
+        SELECT COUNT(*)
+        FROM cdc_change_log
+        <include refid="Condition_Where"/>
+    </select>
+
+    <select id="selectById" resultType="com.yzdbx.cdc.model.entity.ChangeLogEntity">
+        SELECT id, mapping_id, source_table, operation, target_type, success,
+               error_message, raw_data_json, cost_ms, replay_count, last_replay_at, created_at
+        FROM cdc_change_log
+        WHERE id = #{id}
+    </select>
+
+    <update id="increaseReplayCount">
+        UPDATE cdc_change_log
+        SET replay_count = replay_count + 1,
+            last_replay_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectLastErrorByMapping" resultType="com.yzdbx.cdc.model.entity.ChangeLogEntity">
+        SELECT id, mapping_id, source_table, operation, target_type, success,
+               error_message, raw_data_json, cost_ms, replay_count, last_replay_at, created_at
+        FROM cdc_change_log
+        WHERE mapping_id = #{mappingId}
+          AND success = 0
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
+
+</mapper>
+

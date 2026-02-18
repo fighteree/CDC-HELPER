@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzdbx.cdc.mapper.HttpTargetMapper">
+
+    <resultMap id="HttpTargetMap" type="com.yzdbx.cdc.model.entity.HttpTargetEntity">
+        <id column="id" property="id"/>
+        <result column="mapping_id" property="mappingId"/>
+        <result column="url" property="url"/>
+        <result column="method" property="method"/>
+        <result column="headers_json" property="headersJson"/>
+        <result column="timeout_ms" property="timeoutMs"/>
+        <result column="retry_times" property="retryTimes"/>
+    </resultMap>
+
+    <select id="selectByMappingId" resultMap="HttpTargetMap">
+        SELECT id, mapping_id, url, method, headers_json, timeout_ms, retry_times, created_at, updated_at
+        FROM cdc_http_target
+        WHERE mapping_id = #{mappingId}
+    </select>
+
+    <insert id="insert" parameterType="com.yzdbx.cdc.model.entity.HttpTargetEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cdc_http_target
+        (mapping_id, url, method, headers_json, timeout_ms, retry_times)
+        VALUES
+        (#{mappingId}, #{url}, #{method}, #{headersJson}, #{timeoutMs}, #{retryTimes})
+    </insert>
+
+    <update id="update" parameterType="com.yzdbx.cdc.model.entity.HttpTargetEntity">
+        UPDATE cdc_http_target
+        SET
+            url = #{url},
+            method = #{method},
+            headers_json = #{headersJson},
+            timeout_ms = #{timeoutMs},
+            retry_times = #{retryTimes}
+        WHERE mapping_id = #{mappingId}
+    </update>
+
+    <delete id="deleteByMappingId">
+        DELETE FROM cdc_http_target WHERE mapping_id = #{mappingId}
+    </delete>
+
+</mapper>
+
